@@ -1,3 +1,9 @@
+### 🧠 What This Project Solves
+
+- Eliminates manual weekly reporting for marketing teams.
+- Integrates paid marketing platforms (Google, Meta) with e-commerce (Shopify).
+- Enables quick decision-making via live Power BI dashboards.
+
 # marketing-etl-automation
 Automated Marketing ETL Pipeline integrating Google Ads, Meta, Shopify with Power BI dashboards.
 
