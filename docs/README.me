@@ -1,0 +1,260 @@
+This repo contains fully automated ETL pipelines for Shopify, Google Ads, and Meta Ads, integrated with Power BI dashboards for campaign performance reporting and e-commerce analytics.
+
+
+
+✅ Overview:
+This ETL pipeline extracts Shopify data, validates inputs, loads them into a secured MySQL database, and maintains complete audit logging. Built for security, performance, and maintainability.
+
+✅ Directory Structure:
+C:\Secure_ETL_Staging  
+│  
+├─ config  
+├─ utils  
+├─ scripts  
+├─ processed_data  
+├─ logs  
+├─ .env  
+└─ README.me  
+
+✅ How to Run:
+1. Open Git Bash or Terminal.
+2. cd /c/Secure_ETL_Staging.
+3. Run the pipeline with:
+   python -m scripts.shopify_etl_pipeline
+4. Monitor logs in:
+   C:\Secure_ETL_Staging\logs\etl_pipeline.log
+
+✅ Security Features Implemented:
+- Locked-down secure staging folder (EFS encryption enabled).
+- Credentials stored securely in .env.
+- No hardcoded secrets in any script.
+- Daily log rotation with 7-day retention.
+- Strict input validation for all CSV files.
+- Batch inserts for memory optimization.
+
+✅ MySQL Setup:
+Database: shopify_etl
+Tables:
+1. sales_fact
+2. sessions_by_location_fact
+3. page_sessions_fact
+
+Use these queries to check data:
+USE shopify_etl;  
+SELECT COUNT(*) FROM sales_fact;  
+SELECT COUNT(*) FROM sessions_by_location_fact;  
+SELECT COUNT(*) FROM page_sessions_fact;  
+
+✅ Last Audit:
+- All ETL executions pass without data loss or injection issues.
+- Logs validated and rotated successfully.
+- User privileges locked to INSERT/SELECT only.
+
+✅ Automated Scheduling:
+This ETL pipeline is scheduled to run automatically on the 3rd of every month at 1:00 PM using Windows Task Scheduler.  
+To check task status:
+schtasks /Query /TN "Secure_Shopify_ETL_Monthly" /V
+
+✅ Data Sanitization & Automated Cleanup✅ Data Sanitization & Automated Cleanup
+- All ETL scripts sanitize data before SQL insertion:
+- Strips commas, percent signs, and unwanted characters.
+- Converts numbers into proper float/int types.
+- No direct SQL injection risk (parameterized inserts only).
+
+Archival system:
+- CSV files older than 7 days move automatically to /archives.
+- Handled via cleanup_archival.py.
+
+Log cleanup:
+- log_cleanup.py script scheduled monthly for log file management.
+
+Scheduling:
+- Archive cleanup: Weekly task.
+- Log cleanup: 15th of every month, 3:00 AM via Windows Task Scheduler.
+- Verified with tests and stable ETL runs — no bad data, no SQL errors!
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+ Google Ads ETL Pipeline
+
+ 1. Overview:
+
+ This ETL pipeline fetches Google Ads weekly campaign data via API, validates structure, standardizes date ranges, and loads metrics into a secure MySQL table. Built for automation and compliance with best practices.
+
+ 2. Directory Structure Additions:
+
+ C:\Secure_ETL_Staging
+│
+├─ google_ads_data  (temporary API fetch staging)
+
+3. Environment Variables (added in .env):
+
+GOOGLE_CLIENT_ID
+
+GOOGLE_CLIENT_SECRET
+
+GOOGLE_REFRESH_TOKEN
+
+GOOGLE_DEVELOPER_TOKEN
+
+GOOGLE_CUSTOMER_ID
+
+4. How to Run:
+
+cd /c/Secure_ETL_Staging
+python -m scripts.google_ads_etl_pipeline
+
+5. Logs:
+
+Check logs in:
+C:\Secure_ETL_Staging\logs\google_ads_etl.log
+
+6. Database Setup:
+
+Tables created in shopify_etl.
+
+Data inserted: 4 rows per run (weekly aggregation).
+
+Start & end dates auto-corrected if API returns deviations.
+
+7. Security Compliance:
+
+No hardcoded keys — all credentials from environment variables.
+
+Logs rotate automatically with 7-day retention.
+
+Strict input checks to handle API response inconsistencies.
+
+8. Automated Scheduling:
+
+Registered using schtasks for automated weekly execution.
+
+9. Table Setup
+
+Created in: shopify_etl
+
+- Weekly aggregated metrics.
+
+- Duplicate prevention using composite keys.
+
+10. ETL Script
+
+Script: scripts/googleads_etl_pipeline.py
+
+- Dynamic MCC account client selection.
+
+- Auto-corrects start_date/end_date if API returns mismatches.
+
+- Logs each step with timestamps.
+
+11. Automated Execution
+
+Scheduled using Windows Task Scheduler: Runs every Monday at 1:00 PM.
+
+12. Final Audit:
+
+- Verified row loads and column integrity.
+
+- No hardcoded keys, no manual interventions.
+
+- Confirmed cleanup and archival pipelines in place.
+
+13. Log Cleanup:
+
+- Automatically deletes Google Ads logs older than 60 days.
+
+- Scheduled monthly at 3:00 PM on the 1st of every month.
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+META Ads ETL Pipeline
+
+1. Overview:
+
+This ETL pipeline fetches Meta Ads weekly campaign data via API, validates structure, standardizes date ranges, and loads metrics into a secure MySQL table. Built for automation and compliance with best practices.
+
+2. Directory Structure Additions:
+
+C:\Secure_ETL_Staging
+└─ meta_ads_data (temporary API fetch staging)
+
+3. Environment Variables (added in .env):
+
+META_ACCESS_TOKEN
+META_APP_ID
+META_APP_SECRET
+META_AD_ACCOUNT_ID
+
+4. How to Run:
+
+cd /c/Secure_ETL_Staging  
+python -m scripts.metads_etl_pipeline
+
+5. Logs:
+
+Check logs in:
+C:\Secure_ETL_Staging\logs\meta_ads_etl.log
+
+6. Database Setup:
+Tables created in shopify_etl.
+Data inserted: weekly aggregation per run.
+Start & end dates auto-corrected if API deviates.
+
+7. Security Compliance:
+• No hardcoded keys — all credentials from environment variables.
+• Logs rotate automatically with 7-day retention.
+• Strict input checks to handle API inconsistencies.
+
+8. Automated Scheduling:
+Registered using schtasks for automated weekly execution.
+
+9. Table Setup:
+Created in shopify_etl.
+• Weekly aggregated metrics.
+• Duplicate prevention using composite keys (campaign_id + start_date).
+
+10. ETL Script:
+Script: scripts/metads_etl_pipeline.py
+• Secure credential loading from .env.
+• Logs every processing step with timestamps.
+• Dynamic fallback logic for missing fields.
+
+11. Automated Execution:
+Scheduled using Windows Task Scheduler: Runs every Wednesday at 3:00 PM.
+
+12. Final Audit:
+• Verified row loads and data accuracy.
+• Confirmed archival pipelines and log retention in place.
+
+13. Log Cleanup:
+• Automatically deletes Meta Ads logs older than 60 days.
+• Scheduled monthly at 3:00 PM on the 1st of every month.
+
+
+
+--------------------------------------------------------------------------------------------------------------------END-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
