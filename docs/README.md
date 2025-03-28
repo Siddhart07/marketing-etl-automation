@@ -14,7 +14,7 @@ Automated Marketing ETL Pipeline integrating Google Ads, Meta, Shopify with Powe
 🛠️ Check out my latest projects in the pinned repos below!
 
 ### 📊 Dashboard Preview  
-![Dashboard](dashboard_preview.png)
+![Dashboard](https://github.com/Siddhart07/marketing-etl-automation/blob/main/docs/Dashboard_Preview.png)
 
 📬 Let’s connect: [LinkedIn](https://www.linkedin.com/in/siddharth-dutta-b0a04575/)
 
